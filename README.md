@@ -124,6 +124,7 @@ The `branch` object defines parameters for the trunk and branch levels of the tr
 - **`segments`**: Number of radial segments that make up each branch, with a higher value resulting in a smoother cylinder.
 - **`start`**: Specifies where along the parent branch (as a fraction from `0` to `1`) the child branches should start forming.
 - **`taper`**: Controls the tapering of the branches at each level. A value between `0` and `1` defines the reduction in radius from base to tip.
+- **`whorls`**: Groups the child branches of each level into this many tiers (whorls) along the parent branch: the branches of a tier start at the same height and are spread evenly around the parent. `0` (the default) spreads the children evenly along the parent instead.
 - **`twist`**: Defines the amount of twisting applied to each branch level.
 
 ## Leaf Parameters

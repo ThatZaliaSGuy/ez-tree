@@ -859,6 +859,18 @@ export function setupUI(tree, environment, renderer, scene, camera, orbitControl
   }
   branchSection.add(twistSubsection);
 
+  // Whorls subsection (0 = children spread evenly along the parent)
+  const whorlsSubsection = createSubSection('Whorls');
+  for (let i = 1; i <= 3; i++) {
+    const slider = createSlider(`Level ${i}`, tree.options.branch.whorls[i], 0, 10, 1, (val) => {
+      tree.options.branch.whorls[i] = val;
+      onChange();
+    });
+    whorlsSubsection.add(slider);
+    controls.push({ control: slider, update: () => slider.setValue(tree.options.branch.whorls[i]) });
+  }
+  branchSection.add(whorlsSubsection);
+
   parametersTab.appendChild(branchSection.element);
 
   // ----- Leaves Section -----
