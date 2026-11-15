@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { Tree, TreePreset } from '@dgreenheck/ez-tree';
+import { Tree, TreePreset, SeaPresets } from '@dgreenheck/ez-tree';
 import { Environment } from './environment';
 import { loadPresetWithTextures } from './textures';
 
@@ -65,7 +65,8 @@ export async function createScene(renderer) {
   function createTree() {
     const r = minDistance + Math.random() * maxDistance;
     const theta = 2 * Math.PI * Math.random();
-    const presets = Object.keys(TreePreset);
+    // (the forest is grown from the trees: no sea life on land)
+    const presets = Object.keys(TreePreset).filter((name) => !SeaPresets.includes(name));
     const index = Math.floor(Math.random() * presets.length);
 
     const t = new Tree();

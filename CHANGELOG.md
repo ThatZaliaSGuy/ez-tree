@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Sea life
+
+- **Sea presets**: `Staghorn Coral`, `Finger Coral`, `Sea Fan`, `Sea Whip`, `Giant Kelp` and `Seagrass`, listed in the new `SeaPresets` export.
+- **`branch.planar`**: grows the whole plant in one plane (sea fans).
+- **`branch.tip`**: blunt, capped branch tips instead of points (corals).
+- **`leaves.width`, `leaves.segments`, `leaves.curl`**: narrow blade leaves that bend along their length (kelp, seagrass). A leaf `size` of `0` grows no leaves.
+- **`branch.whorls`**: groups the child branches of a level into tiers along the parent.
+- All of these are off by default: existing presets and seeds grow the same trees as before.
+
 ## [2.0.0] - 2026-07-16
 
 ### Levels of Detail

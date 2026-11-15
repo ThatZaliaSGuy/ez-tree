@@ -14,6 +14,12 @@ import pineSmall from './pine_small.json';
 import pineMedium from './pine_medium.json';
 import pineLarge from './pine_large.json';
 import trellis from './trellis.json';
+import staghornCoral from './staghorn_coral.json';
+import fingerCoral from './finger_coral.json';
+import seaFan from './sea_fan.json';
+import seaWhip from './sea_whip.json';
+import giantKelp from './giant_kelp.json';
+import seagrass from './seagrass.json';
 import TreeOptions from '../options';
 
 export const TreePreset = {
@@ -33,7 +39,26 @@ export const TreePreset = {
   'Pine Medium': pineMedium,
   'Pine Large': pineLarge,
   'Trellis': trellis,
+  'Staghorn Coral': staghornCoral,
+  'Finger Coral': fingerCoral,
+  'Sea Fan': seaFan,
+  'Sea Whip': seaWhip,
+  'Giant Kelp': giantKelp,
+  'Seagrass': seagrass,
 };
+
+/**
+ * The names of the presets in TreePreset that grow sea life (corals, sea fans,
+ * kelp, seagrass) rather than trees.
+ */
+export const SeaPresets = [
+  'Staghorn Coral',
+  'Finger Coral',
+  'Sea Fan',
+  'Sea Whip',
+  'Giant Kelp',
+  'Seagrass',
+];
 
 /**
  * @param {string} name The name of the preset to load

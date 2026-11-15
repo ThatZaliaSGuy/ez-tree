@@ -94,6 +94,28 @@ docker compose up -d
 
 The `TreeOptions` class defines an options object that controls various parameters of a procedurally generated tree. Each property of this object allows for customization of the tree's appearance, including bark, branches, and leaves. Below is a detailed explanation of each property of the `TreeOptions` object.
 
+## Sea Life
+
+The same generator grows branching sea life. Six presets are included, listed in `SeaPresets`:
+
+| Preset | Built from |
+| --- | --- |
+| `Staghorn Coral` | blunt tips (`branch.tip`), no leaves |
+| `Finger Coral` | blunt tips, short thick branches |
+| `Sea Fan` | planar growth (`branch.planar`) |
+| `Sea Whip` | one level of long, blunt rods |
+| `Giant Kelp` | long stipes with blade leaves (`leaves.width`, `segments`, `curl`) |
+| `Seagrass` | a tuft of strap blades |
+
+```js
+import { Tree, SeaPresets } from '@dgreenheck/ez-tree';
+
+const coral = new Tree();
+coral.loadPreset('Staghorn Coral');
+```
+
+The massive forms of a reef (brain and boulder corals, plates, sponges) are not branching shapes and are out of scope.
+
 ## General Properties
 
 - **`seed`**: Sets the initial value for random generation, ensuring consistent tree generation when using the same seed.
@@ -125,6 +147,8 @@ The `branch` object defines parameters for the trunk and branch levels of the tr
 - **`start`**: Specifies where along the parent branch (as a fraction from `0` to `1`) the child branches should start forming.
 - **`taper`**: Controls the tapering of the branches at each level. A value between `0` and `1` defines the reduction in radius from base to tip.
 - **`whorls`**: Groups the child branches of each level into this many tiers (whorls) along the parent branch: the branches of a tier start at the same height and are spread evenly around the parent. `0` (the default) spreads the children evenly along the parent instead.
+- **`planar`**: `0` to `1`. At `1` every branch grows in the XY plane, with its children alternating to either side: a flat fan (sea fans). `0` (the default) grows in the round.
+- **`tip`**: `0` to `1`, deciduous growth. The share of its tapered radius a branch tip keeps, closed with a rounded cap (corals). `0` (the default) gives pointed tips.
 - **`twist`**: Defines the amount of twisting applied to each branch level.
 
 ## Leaf Parameters
@@ -136,6 +160,10 @@ The `leaves` object defines properties that control the appearance and placement
 - **`angle`**: Defines the angle of the leaves relative to the parent branch, in degrees.
 - **`count`**: Number of leaves to generate.
 - **`start`**: Specifies where along the length of the branch (as a value between `0` and `1`) leaves should start growing.
+- **`size`** of `0` grows no leaves.
+- **`width`**: Width of a leaf as a fraction of its length (`1` = a square quad).
+- **`segments`**: Number of quads along a leaf. Above `1` the leaf is a blade: a ribbon that can bend (kelp, seagrass).
+- **`curl`**: Total bend of a blade over its length, in degrees.
 - **`size`**: Size of the leaves, represented as a numeric value.
 - **`sizeVariance`**: Specifies how much variance in size each leaf instance should have, making the leaves look more natural.
 - **`tint`**: Tint color applied to the leaves, defined as a hexadecimal color value (e.g., `0xffffff` for white).

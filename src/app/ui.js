@@ -859,6 +859,21 @@ export function setupUI(tree, environment, renderer, scene, camera, orbitControl
   }
   branchSection.add(twistSubsection);
 
+  // Planar growth (a fan in the XY plane) and blunt, capped branch tips
+  const planarSlider = createSlider('Planar', tree.options.branch.planar, 0, 1, 0.01, (val) => {
+    tree.options.branch.planar = val;
+    onChange();
+  });
+  branchSection.add(planarSlider);
+  controls.push({ control: planarSlider, update: () => planarSlider.setValue(tree.options.branch.planar) });
+
+  const tipSlider = createSlider('Blunt Tips', tree.options.branch.tip, 0, 1, 0.01, (val) => {
+    tree.options.branch.tip = val;
+    onChange();
+  });
+  branchSection.add(tipSlider);
+  controls.push({ control: tipSlider, update: () => tipSlider.setValue(tree.options.branch.tip) });
+
   // Whorls subsection (0 = children spread evenly along the parent)
   const whorlsSubsection = createSubSection('Whorls');
   for (let i = 1; i <= 3; i++) {
@@ -918,7 +933,7 @@ export function setupUI(tree, environment, renderer, scene, camera, orbitControl
   leavesSection.add(leafStartSlider);
   controls.push({ control: leafStartSlider, update: () => leafStartSlider.setValue(tree.options.leaves.start) });
 
-  const leafSizeSlider = createSlider('Size', tree.options.leaves.size, 0, 10, 0.1, (val) => {
+  const leafSizeSlider = createSlider('Size', tree.options.leaves.size, 0, 20, 0.1, (val) => {
     tree.options.leaves.size = val;
     onChange();
   });
@@ -931,6 +946,28 @@ export function setupUI(tree, environment, renderer, scene, camera, orbitControl
   });
   leavesSection.add(leafVarianceSlider);
   controls.push({ control: leafVarianceSlider, update: () => leafVarianceSlider.setValue(tree.options.leaves.sizeVariance) });
+
+  // Blades: narrow leaves made of several quads that bend along their length
+  const leafWidthSlider = createSlider('Width', tree.options.leaves.width, 0.02, 1, 0.01, (val) => {
+    tree.options.leaves.width = val;
+    onChange();
+  });
+  leavesSection.add(leafWidthSlider);
+  controls.push({ control: leafWidthSlider, update: () => leafWidthSlider.setValue(tree.options.leaves.width) });
+
+  const leafSegmentsSlider = createSlider('Segments', tree.options.leaves.segments, 1, 8, 1, (val) => {
+    tree.options.leaves.segments = val;
+    onChange();
+  });
+  leavesSection.add(leafSegmentsSlider);
+  controls.push({ control: leafSegmentsSlider, update: () => leafSegmentsSlider.setValue(tree.options.leaves.segments) });
+
+  const leafCurlSlider = createSlider('Curl', tree.options.leaves.curl, -120, 120, 1, (val) => {
+    tree.options.leaves.curl = val;
+    onChange();
+  });
+  leavesSection.add(leafCurlSlider);
+  controls.push({ control: leafCurlSlider, update: () => leafCurlSlider.setValue(tree.options.leaves.curl) });
 
   const alphaTestSlider = createSlider('Alpha Test', tree.options.leaves.alphaTest, 0, 1, 0.01, (val) => {
     tree.options.leaves.alphaTest = val;

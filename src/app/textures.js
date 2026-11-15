@@ -22,6 +22,8 @@ export const LeafType = {
   Aspen: 'aspen',
   Oak: 'oak',
   Pine: 'pine',
+  Kelp: 'kelp',
+  Seagrass: 'seagrass',
 };
 
 const textureLoader = new THREE.TextureLoader();
