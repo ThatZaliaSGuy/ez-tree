@@ -116,6 +116,50 @@ coral.loadPreset('Staghorn Coral');
 
 The massive forms of a reef (brain and boulder corals, plates, sponges) are not branching shapes and are out of scope.
 
+## Regions
+
+Every preset belongs to a region of the world and is a tree, a shrub or ground cover:
+
+| Region | Presets |
+| --- | --- |
+| `Temperate` | Ash, Aspen, Oak, Pine, Bush 1 to 3, Fern, Grass Tuft |
+| `Boreal` | Pine, Aspen, Spruce, Birch, Dwarf Willow |
+| `Mediterranean` | Cypress, Olive, Maquis Shrub |
+| `Arid` | Saguaro, Joshua Tree, Ocotillo, Sagebrush, Dead Snag |
+| `Savanna` | Umbrella Acacia, Baobab, Thorn Bush, Savanna Grass |
+| `Tropical` | Sea Grape, Tropical Almond, Frangipani, Banyan Fig, Flame Tree, Casuarina, Mangrove, Coconut Palm, Beach Naupaka, Hibiscus, Scrub Tangle, Croton, Ti Plant |
+| `Reef` | the sea presets below |
+
+```js
+import { Tree, Regions, PlantKind, regionPresets, presetInfo, applyRegionSeason } from '@dgreenheck/ez-tree';
+
+regionPresets('Savanna');                  // every savanna preset
+regionPresets('Boreal', PlantKind.Shrub);  // ['Dwarf Willow']
+presetInfo('Spruce');                      // { regions: ['Boreal'], kind: 'tree', response: 'evergreen' }
+
+// a boreal birch in late autumn, with the snow that region has by then
+const tree = new Tree();
+tree.options.copy(structuredClone(TreePreset['Birch']));
+applyRegionSeason(tree, 'Birch', 'Boreal', 0.85);
+tree.generate();
+```
+
+## Seasons
+
+`options.season` turns the year on a tree without changing its shape (no random numbers are drawn, so the same seed is the same tree in every season).
+
+- **`enabled`**: Whether the time of year changes the foliage.
+- **`time`**: The time of year, `0` to `1`: `0` midwinter, `0.25` spring, `0.5` midsummer, `0.75` autumn.
+- **`response`**: `'auto'` (deciduous growth sheds its leaves, evergreen growth keeps them), `'deciduous'`, `'evergreen'` or `'none'`. `presetInfo(name).response` gives the right one for a preset.
+- **`autumnTints`**: The colours leaves turn in autumn. Each leaf takes one, and turns at its own time.
+- **`springTint`**: The colour of fresh leaves.
+- **`blossom`**, **`blossomTint`**: The share of the leaves that open as blossom in spring, and its colour.
+- **`snow`**: Snow cover, `0` to `1`: surfaces that face up turn white. `tree.setSnow(amount)` changes it without regenerating. `regionSnow(region, time)` gives a region's snow for a time of year.
+
+A deciduous tree buds in spring (with blossom, if it has any), is in full leaf through summer, turns and sheds in autumn, and stands bare in winter. An evergreen keeps its leaves and dulls a little in winter.
+
+`options.health` (`1` to `0`) is how alive the tree is: a dying tree loses leaves (the rest brown), sheds twigs, and its bark bleaches. `0` is a dead tree (see the `Dead Snag` preset).
+
 ## General Properties
 
 - **`seed`**: Sets the initial value for random generation, ensuring consistent tree generation when using the same seed.

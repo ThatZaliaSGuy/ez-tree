@@ -21,6 +21,6 @@ courtesy to the authors and contributors at ambientcg.
 | `Bark015_1K-JPG/`   | https://ambientcg.com/view?id=Bark015   |
 
 The leaf textures in `leaves/` are bundled with the EZ-Tree demo app and are
-licensed under the project's own license (see repository LICENSE). `kelp.png`
-and `seagrass.png` are procedurally generated (no source image), under the same
+licensed under the project's own license (see repository LICENSE). `kelp.png`,
+`seagrass.png`, `broad.png`, `lance.png`, `palm.png` and `grass.png` are procedurally generated (no source image), under the same
 license.

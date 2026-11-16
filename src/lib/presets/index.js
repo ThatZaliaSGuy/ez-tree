@@ -20,6 +20,7 @@ import seaFan from './sea_fan.json';
 import seaWhip from './sea_whip.json';
 import giantKelp from './giant_kelp.json';
 import seagrass from './seagrass.json';
+import { RegionalPresets } from './regional';
 import TreeOptions from '../options';
 
 export const TreePreset = {
@@ -45,6 +46,7 @@ export const TreePreset = {
   'Sea Whip': seaWhip,
   'Giant Kelp': giantKelp,
   'Seagrass': seagrass,
+  ...RegionalPresets,
 };
 
 /**

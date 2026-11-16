@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { zipSync } from 'three/addons/libs/fflate.module.js';
-import { Billboard, TreePreset, Tree, TreeType } from '@dgreenheck/ez-tree';
+import { Billboard, TreePreset, Tree, TreeType, SeasonResponse, Regions, regionPresets, regionSnow } from '@dgreenheck/ez-tree';
 import { BarkType, LeafType, applyTreeTextures, loadPresetWithTextures } from './textures';
 import { Environment } from './environment';
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
@@ -255,7 +255,18 @@ function createSelect(label, options, value, onChange) {
 
   return {
     element: container,
-    setValue: (v) => { select.value = v; }
+    setValue: (v) => { select.value = v; },
+    // Replaces the list of choices ({ label: value })
+    setOptions: (next, selected) => {
+      select.replaceChildren();
+      Object.entries(next).forEach(([key, val]) => {
+        const option = document.createElement('option');
+        option.value = val;
+        option.textContent = key;
+        if (val === selected) option.selected = true;
+        select.appendChild(option);
+      });
+    }
   };
 }
 
@@ -626,8 +637,33 @@ export function setupUI(tree, environment, renderer, scene, camera, orbitControl
   // ----- Presets Section -----
   const presetsSection = createSection('Presets', 'swatch', true);
 
+  // Region: narrows the presets to the plants of one part of the world
+  let currentRegion = 'All';
+  const presetChoices = (region) =>
+    Object.fromEntries((region === 'All' ? Object.keys(TreePreset) : regionPresets(region)).map(p => [p, p]));
+  const selectPreset = (val) => {
+    loadPresetWithTextures(tree, val);
+    if (previewLevel > 0) {
+      applyLODPreview();
+    }
+    refreshAllControls();
+  };
+  const regionSelect = createSelect('Region',
+    Object.fromEntries(['All', ...Object.keys(Regions)].map(r => [r, r])),
+    currentRegion,
+    (val) => {
+      currentRegion = val;
+      const names = Object.keys(presetChoices(val));
+      presetSelect.setOptions(presetChoices(val), names[0]);
+      if (val !== 'All' && names.length > 0) {
+        selectPreset(names[0]);
+      }
+    }
+  );
+  presetsSection.add(regionSelect);
+
   const presetSelect = createSelect('Preset',
-    Object.fromEntries(Object.keys(TreePreset).map(p => [p, p])),
+    presetChoices(currentRegion),
     initialPreset,
     (val) => {
       loadPresetWithTextures(tree, val);
@@ -655,6 +691,77 @@ export function setupUI(tree, environment, renderer, scene, camera, orbitControl
   presetsSection.add(randomSeedBtn);
 
   parametersTab.appendChild(presetsSection.element);
+
+  // ----- Season Section -----
+  const seasonSection = createSection('Season', 'leaf', false);
+
+  const seasonToggle = createToggle('Seasons', tree.options.season.enabled, (val) => {
+    tree.options.season.enabled = val;
+    onChange();
+  });
+  seasonSection.add(seasonToggle);
+  controls.push({ control: seasonToggle, update: () => seasonToggle.setValue(tree.options.season.enabled) });
+
+  // 0 midwinter, 0.25 spring, 0.5 midsummer, 0.75 autumn
+  const seasonName = (t) => ['Winter', 'Spring', 'Summer', 'Autumn'][Math.floor(((t + 0.125) % 1) * 4)];
+  const seasonDisplay = createDisplay('Time of Year', tree.options.season.time, seasonName);
+  seasonSection.add(seasonDisplay);
+
+  const seasonTimeSlider = createSlider('Year', tree.options.season.time, 0, 1, 0.01, (val) => {
+    tree.options.season.time = val;
+    seasonDisplay.setValue(val);
+    onChange();
+  });
+  seasonSection.add(seasonTimeSlider);
+  controls.push({ control: seasonTimeSlider, update: () => { seasonTimeSlider.setValue(tree.options.season.time); seasonDisplay.setValue(tree.options.season.time); } });
+
+  const responseSelect = createSelect('Foliage', SeasonResponse, tree.options.season.response, (val) => {
+    tree.options.season.response = val;
+    onChange();
+  });
+  seasonSection.add(responseSelect);
+  controls.push({ control: responseSelect, update: () => responseSelect.setValue(tree.options.season.response) });
+
+  const blossomSlider = createSlider('Blossom', tree.options.season.blossom, 0, 1, 0.01, (val) => {
+    tree.options.season.blossom = val;
+    onChange();
+  });
+  seasonSection.add(blossomSlider);
+  controls.push({ control: blossomSlider, update: () => blossomSlider.setValue(tree.options.season.blossom) });
+
+  const blossomTintPicker = createColorPicker('Blossom Tint', tree.options.season.blossomTint, (val) => {
+    tree.options.season.blossomTint = val;
+    onChange();
+  });
+  seasonSection.add(blossomTintPicker);
+  controls.push({ control: blossomTintPicker, update: () => blossomTintPicker.setValue(tree.options.season.blossomTint) });
+
+  // Snow is a uniform shared by the tree's materials: no regeneration needed.
+  // The forest around the tree is snowed on with it.
+  const applySnow = (val) => {
+    tree.setSnow(val);
+    scene.getObjectByName('Forest')?.children.forEach((t) => t.setSnow?.(val));
+  };
+  const snowSlider = createSlider('Snow', tree.options.season.snow, 0, 1, 0.01, applySnow);
+  seasonSection.add(snowSlider);
+  controls.push({ control: snowSlider, update: () => { snowSlider.setValue(tree.options.season.snow); applySnow(tree.options.season.snow); } });
+
+  // Snow that follows the time of year in the chosen region
+  const regionSnowBtn = createButton('Snow for Region and Time', 'dice', () => {
+    const val = currentRegion === 'All' ? 0 : regionSnow(currentRegion, tree.options.season.time);
+    snowSlider.setValue(val);
+    applySnow(val);
+  });
+  seasonSection.add(regionSnowBtn);
+
+  const healthSlider = createSlider('Health', tree.options.health, 0, 1, 0.01, (val) => {
+    tree.options.health = val;
+    onChange();
+  });
+  seasonSection.add(healthSlider);
+  controls.push({ control: healthSlider, update: () => healthSlider.setValue(tree.options.health) });
+
+  parametersTab.appendChild(seasonSection.element);
 
   // ----- Bark Section -----
   const barkSection = createSection('Bark', 'cube', false);

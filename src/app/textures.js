@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { TreePreset } from '@dgreenheck/ez-tree';
+import { TreePreset, presetInfo } from '@dgreenheck/ez-tree';
 
 // Bark keys map 1:1 to ambientcg directories under /textures/bark/.
 // Add or remove entries to expose more variants in the UI dropdown.
@@ -24,6 +24,10 @@ export const LeafType = {
   Pine: 'pine',
   Kelp: 'kelp',
   Seagrass: 'seagrass',
+  Broad: 'broad',
+  Lance: 'lance',
+  Palm: 'palm',
+  Grass: 'grass',
 };
 
 const textureLoader = new THREE.TextureLoader();
@@ -111,7 +115,11 @@ export function applyTreeTextures(tree) {
 export function loadPresetWithTextures(tree, name, generate = true) {
   const json = structuredClone(TreePreset[name]);
   if (!json) return;
+  // A preset that says nothing about its health is a healthy plant, and the
+  // seasons act on it the way its kind responds to them.
+  tree.options.health = 1;
   tree.options.copy(json);
+  tree.options.season.response = presetInfo(name)?.response ?? 'auto';
   applyTreeTextures(tree);
   if (generate) {
     tree.generate();

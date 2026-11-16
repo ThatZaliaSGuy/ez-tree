@@ -5,6 +5,19 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Seasons, health and snow
+
+- **`options.season`**: the time of year changes the foliage: spring buds and blossom, autumn colour and leaf fall, bare winter trees; evergreens dull in winter. Decided per leaf without random numbers, so a tree keeps its shape through the year.
+- **Snow**: `season.snow` whitens the surfaces that face up, on bark and leaves; `tree.setSnow()` changes it live.
+- **`options.health`**: dying and dead trees (fewer, browner leaves; shed twigs; bleached bark).
+- All off by default: existing trees are unchanged.
+
+### Regions
+
+- **Regions** (`Regions`, `regionPresets`, `presetInfo`, `regionSnow`, `applyRegionSeason`): presets grouped by where they grow (Temperate, Boreal, Mediterranean, Arid, Savanna, Tropical, Reef) and by kind (tree, shrub, ground cover).
+- **30 new presets**: 13 tropical, 3 boreal, 5 arid, 4 savanna, 3 mediterranean, plus a fern and a grass tuft, with four generated leaf textures (broad, lance, palm, grass).
+- **App**: a Region filter on the preset list and a Season section (time of year, blossom, snow, health).
+
 ### Sea life
 
 - **Sea presets**: `Staghorn Coral`, `Finger Coral`, `Sea Fan`, `Sea Whip`, `Giant Kelp` and `Seagrass`, listed in the new `SeaPresets` export.
